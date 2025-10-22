@@ -6,34 +6,32 @@
     <title>FinanceID - Manajer Keuangan</title>
     <meta name="theme-color" content="#00AA13">
     <meta name="description" content="Aplikasi manajemen keuangan modern seperti GoPay dan Livin'">
-    
-    <!-- Modern Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>💸 Manajer Keuangan Pribadi</h1>
+            <h1>💸 FinanceID</h1>
+            <p>Kelola keuangan dengan mudah</p>
         </header>
 
         <div class="balance-section card">
             <h2>Saldo Saat Ini</h2>
-            <div class="balance-amount" id="balance">Rp 0.00</div>
+            <div class="balance-amount" id="balance">Rp 0</div>
         </div>
 
         <div class="budget-section card">
-            <h3>📊 Rencana Anggaran</h3>
+            <h3>📊 Atur Limit Pengeluaran</h3>
             
             <div class="budget-setup">
-                <h4>Atur Anggaran Kamu</h4>
+                <h4>Batasi Pengeluaran Kamu</h4>
                 <form id="budgetForm">
                     <div class="form-group">
-                        <label for="budgetPeriod">Periode Anggaran:</label>
+                        <label for="budgetPeriod">Periode Limit:</label>
                         <select id="budgetPeriod" required>
                             <option value="daily">Harian</option>
                             <option value="weekly">Mingguan</option>
@@ -43,34 +41,35 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="totalBudget">Total Anggaran:</label>
-                        <input type="number" id="totalBudget" step="10000" required placeholder="contoh: 1000000">
+                        <label for="totalBudget">Total Limit Pengeluaran:</label>
+                        <input type="number" id="totalBudget" step="10000" required placeholder="contoh: 500000">
+                        <small class="input-hint">Maksimal yang boleh dikeluarkan dalam periode ini</small>
                     </div>
                     
                     <div id="customCategories">
                         <div class="category-group">
                             <div class="form-group">
-                                <label>Kategori 1:</label>
-                                <input type="text" class="category-name" placeholder="Nama kategori" value="Tabungan">
-                                <input type="number" class="category-amount" placeholder="Jumlah" value="100000">
+                                <label>Kategori Pengeluaran:</label>
+                                <input type="text" class="category-name" placeholder="Nama kategori" value="Makan & Minum">
+                                <input type="number" class="category-amount" placeholder="Limit" value="200000">
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group button-group">
                         <button type="button" id="addCategory">+ Tambah Kategori</button>
                         <button type="button" id="removeCategory">- Hapus Kategori</button>
                     </div>
                     
-                    <button type="submit">Atur Rencana Anggaran</button>
+                    <button type="submit" class="primary-btn">Atur Limit Pengeluaran</button>
                 </form>
             </div>
 
             <div class="budget-display" id="budgetDisplay" style="display: none;">
-                <h4>Progress Anggaran <span id="periodLabel">Bulanan</span></h4>
+                <h4>Progress Limit <span id="periodLabel">Bulanan</span></h4>
                 <div class="budget-summary">
                     <div class="budget-item">
-                        <span>Total Anggaran:</span>
+                        <span>Total Limit:</span>
                         <span id="displayTotalBudget">Rp 0</span>
                     </div>
                     <div class="budget-item">
@@ -78,12 +77,16 @@
                         <span id="displayTotalUsed">Rp 0</span>
                     </div>
                     <div class="budget-item">
-                        <span>Sisa:</span>
+                        <span>Sisa Limit:</span>
                         <span id="displayRemaining">Rp 0</span>
                     </div>
-                    <div class="budget-item">
-                        <span>Reset Otomatis:</span>
-                        <span id="resetTimer">-</span>
+                    <div class="reset-info">
+                        <span class="reset-label">Reset berikutnya:</span>
+                        <span class="reset-time" id="resetTimer">-</span>
+                    </div>
+                    <div class="budget-item warning" id="warningMessage" style="display: none;">
+                        <span>⚠️ Peringatan:</span>
+                        <span style="color: var(--danger);">Melebihi limit!</span>
                     </div>
                 </div>
 
@@ -101,7 +104,7 @@
                 
                 <div class="form-group">
                     <label for="amount">Jumlah:</label>
-                    <input type="number" id="amount" step="0.01" required placeholder="contoh: 50000">
+                    <input type="number" id="amount" step="1000" required placeholder="contoh: 50000">
                 </div>
 
                 <div class="form-group">
@@ -119,7 +122,7 @@
                     </select>
                 </div>
                 
-                <button type="submit">Tambah Transaksi</button>
+                <button type="submit" class="primary-btn">Tambah Transaksi</button>
             </form>
         </div>
 
@@ -129,13 +132,13 @@
         </div>
 
         <div class="summary-section">
-            <div class="summary-card">
+            <div class="summary-card income-card">
                 <h4>Total Pemasukan</h4>
-                <div class="income-amount" id="totalIncome">Rp 0.00</div>
+                <div class="income-amount" id="totalIncome">Rp 0</div>
             </div>
-            <div class="summary-card">
+            <div class="summary-card expense-card">
                 <h4>Total Pengeluaran</h4>
-                <div class="expense-amount" id="totalExpenses">Rp 0.00</div>
+                <div class="expense-amount" id="totalExpenses">Rp 0</div>
             </div>
         </div>
     </div>
@@ -143,4 +146,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
