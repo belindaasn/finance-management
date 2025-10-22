@@ -2,7 +2,7 @@
 
 Aplikasi web modern untuk mengatur keuangan pribadi dengan design inspirasi GoPay dan Mandiri Livin'. Dibuat dengan teknologi web modern dan PWA support.
 
-🌐 **Live Demo**: [https://belindaasn.github.io/finance-manager/]
+🌐 **Live Demo**: [https://belindaasn.github.io/finance-management]
 
 ## ✨ Fitur Utama
 
@@ -235,3 +235,4 @@ python -m http.server 8000
 *"Financial freedom is available to those who learn about it and work for it."* - Robert Kiyosaki
 
 **Note**: Ganti `your-username` pada demo URL dengan username GitHub kamu yang sebenarnya!
+
