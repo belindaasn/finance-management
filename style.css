@@ -5,114 +5,141 @@
 }
 
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --background: #f8fafc;
-    --surface: #ffffff;
-    --text: #1e293b;
-    --text-light: #64748b;
-    --border: #e2e8f0;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --primary: #00AA13;           /* GoPay Green */
+    --primary-dark: #008A0F;
+    --primary-light: #E8F5E9;
+    --secondary: #FF6B00;         /* GoPay Orange */
+    --accent: #3366FF;            /* Blue accent */
+    --success: #00C853;
+    --warning: #FFAB00;
+    --danger: #FF3B30;
+    --background: #F8F9FA;
+    --surface: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --border: #E5E5E5;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    --gradient-orange: linear-gradient(135deg, #FF6B00, #FF8F00);
+    --gradient-blue: linear-gradient(135deg, #3366FF, #1A47FF);
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: var(--text);
-    line-height: 1.6;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.5;
     min-height: 100vh;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 428px; /* Mobile-first like banking apps */
     margin: 0 auto;
-    padding: 20px;
+    padding: 0;
+    background: var(--surface);
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
 }
 
-/* Header */
+/* Header - GoPay Style */
 header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 60px 24px 30px;
     text-align: center;
-    margin-bottom: 40px;
+    position: relative;
+    border-radius: 0 0 24px 24px;
 }
 
 header h1 {
-    color: white;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 8px;
 }
 
-/* Cards */
-.card {
-    background: var(--surface);
-    padding: 24px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    margin-bottom: 24px;
-    border: 1px solid var(--border);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: var(--gradient-primary);
+    z-index: -1;
 }
 
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* Balance Section */
+/* Balance Section - Like Banking Apps */
 .balance-section {
-    text-align: center;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    padding: 32px;
+    background: var(--gradient-primary);
+    margin: -50px 20px 20px;
+    padding: 30px 24px;
     border-radius: 20px;
+    color: white;
+    text-align: center;
     box-shadow: var(--shadow-lg);
-    margin-bottom: 32px;
+    position: relative;
+    z-index: 2;
 }
 
 .balance-section h2 {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 500;
     opacity: 0.9;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
 }
 
 .balance-amount {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
+    letter-spacing: -0.5px;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Budget Section */
-.budget-section h3 {
-    color: var(--text);
-    font-size: 1.5rem;
+/* Cards - Modern Fintech Style */
+.card {
+    background: var(--surface);
+    margin: 0 20px 16px;
+    padding: 0;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.card-header h3 {
+    font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 20px;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.budget-section h3::before {
+.card-body {
+    padding: 24px;
+}
+
+/* Budget Section */
+.budget-section .card-header {
+    background: linear-gradient(135deg, var(--primary-light), #F0F9FF);
+    border-bottom: none;
+}
+
+.budget-section .card-header h3::before {
     content: "📊";
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
-.budget-setup h4 {
-    color: var(--text);
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--border);
-}
-
-/* Forms */
+/* Forms - Modern Inputs */
 .form-group {
     margin-bottom: 20px;
 }
@@ -121,39 +148,59 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: var(--text);
+    color: var(--text-primary);
     font-size: 0.9rem;
 }
 
 input, select {
     width: 100%;
-    padding: 12px 16px;
+    padding: 16px;
     border: 2px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 1rem;
     transition: all 0.2s ease;
     background: var(--surface);
+    font-family: inherit;
 }
 
 input:focus, select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 170, 19, 0.1);
+    background: var(--surface);
 }
 
-/* Buttons */
+/* Buttons - GoPay Style */
 button {
     background: var(--primary);
     color: white;
-    padding: 14px 24px;
+    padding: 16px 24px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     transition: all 0.2s ease;
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before {
+    left: 100%;
 }
 
 button:hover {
@@ -167,11 +214,11 @@ button:active {
 }
 
 button#addCategory {
-    background: var(--secondary);
+    background: var(--success);
 }
 
 button#addCategory:hover {
-    background: #0da271;
+    background: #00B347;
 }
 
 button#removeCategory {
@@ -179,23 +226,24 @@ button#removeCategory {
 }
 
 button#removeCategory:hover {
-    background: #dc2626;
+    background: #FF2A1F;
 }
 
 .delete-btn {
     background: var(--danger);
     color: white;
     border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 500;
     width: auto;
+    margin: 0;
 }
 
 .delete-btn:hover {
-    background: #dc2626;
+    background: #FF2A1F;
     transform: none;
 }
 
@@ -203,17 +251,17 @@ button#removeCategory:hover {
 .category-group {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 16px;
+    gap: 12px;
     margin-bottom: 16px;
     align-items: end;
 }
 
 /* Budget Display */
 .budget-summary {
-    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    background: linear-gradient(135deg, #F8F9FA, #F1F3F4);
     padding: 20px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     border: 1px solid var(--border);
 }
 
@@ -231,7 +279,7 @@ button#removeCategory:hover {
     margin-bottom: 0;
 }
 
-/* Progress Bars */
+/* Progress Bars - Modern */
 .budget-category {
     margin-bottom: 20px;
 }
@@ -244,10 +292,14 @@ button#removeCategory:hover {
     font-size: 0.9rem;
 }
 
+.progress-container {
+    position: relative;
+}
+
 .progress-bar {
-    background: #e2e8f0;
+    background: #E8EAED;
     border-radius: 10px;
-    height: 12px;
+    height: 8px;
     overflow: hidden;
     position: relative;
 }
@@ -255,7 +307,7 @@ button#removeCategory:hover {
 .progress-fill {
     height: 100%;
     border-radius: 10px;
-    transition: width 0.5s ease;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
@@ -266,7 +318,7 @@ button#removeCategory:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
     animation: shimmer 2s infinite;
 }
 
@@ -275,111 +327,138 @@ button#removeCategory:hover {
     100% { transform: translateX(100%); }
 }
 
-.on-track { background: linear-gradient(135deg, var(--secondary), #34d399); }
-.near-limit { background: linear-gradient(135deg, var(--warning), #fbbf24); }
-.over-budget { background: linear-gradient(135deg, var(--danger), #f87171); }
-
-/* Transaction Form */
-.transaction-form h3 {
-    color: var(--text);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.on-track { 
+    background: linear-gradient(90deg, var(--success), #00E676);
+    box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3);
 }
 
-.transaction-form h3::before {
+.near-limit { 
+    background: linear-gradient(90deg, var(--warning), #FFD600);
+    box-shadow: 0 2px 8px rgba(255, 171, 0, 0.3);
+}
+
+.over-budget { 
+    background: linear-gradient(90deg, var(--danger), #FF5252);
+    box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
+}
+
+/* Transaction Form */
+.transaction-form .card-header {
+    background: linear-gradient(135deg, #FFF3E0, #FFF8E1);
+    border-bottom: none;
+}
+
+.transaction-form .card-header h3::before {
     content: "💳";
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 /* Transaction List */
-.transaction-list h3 {
-    color: var(--text);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.transaction-list .card-header {
+    background: linear-gradient(135deg, #E3F2FD, #E1F5FE);
+    border-bottom: none;
 }
 
-.transaction-list h3::before {
+.transaction-list .card-header h3::before {
     content: "📝";
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .transaction-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    padding: 16px 0;
     border-bottom: 1px solid var(--border);
     transition: background-color 0.2s ease;
 }
 
 .transaction-item:hover {
-    background: #f8fafc;
-    border-radius: 8px;
+    background: #FAFAFA;
 }
 
 .transaction-item:last-child {
     border-bottom: none;
 }
 
-.income {
-    color: var(--secondary);
+.transaction-info {
+    flex: 1;
+}
+
+.transaction-description {
     font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.transaction-meta {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+}
+
+.transaction-amount {
+    font-weight: 700;
     font-size: 1.1rem;
+}
+
+.income {
+    color: var(--success);
 }
 
 .expense {
     color: var(--danger);
-    font-weight: 600;
-    font-size: 1.1rem;
 }
 
-/* Summary Section */
+/* Summary Section - GoPay Style */
 .summary-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 32px;
+    gap: 12px;
+    margin: 20px;
+    padding: 20px 0;
 }
 
 .summary-card {
     background: var(--surface);
-    padding: 24px;
+    padding: 20px;
     border-radius: 16px;
     box-shadow: var(--shadow);
     text-align: center;
     transition: transform 0.2s ease;
+    border: 1px solid var(--border);
 }
 
 .summary-card:hover {
     transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.summary-card.income-card {
+    background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+}
+
+.summary-card.expense-card {
+    background: linear-gradient(135deg, #FFEBEE, #FCE4EC);
 }
 
 .summary-card h4 {
-    color: var(--text-light);
-    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
     font-weight: 500;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .income-amount {
-    color: var(--secondary);
-    font-size: 1.8rem;
+    color: var(--success);
+    font-size: 1.5rem;
     font-weight: 700;
 }
 
 .expense-amount {
     color: var(--danger);
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
 }
 
@@ -387,71 +466,108 @@ button#removeCategory:hover {
 #resetTimer {
     color: var(--primary);
     font-weight: 600;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+/* Bottom Navigation (Like Banking Apps) */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    backdrop-filter: blur(10px);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-tertiary);
+    font-size: 0.7rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-item.active {
+    color: var(--primary);
+}
+
+.nav-icon {
+    font-size: 1.2rem;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .container {
-        padding: 16px;
+        border-radius: 0;
     }
     
-    header h1 {
-        font-size: 2rem;
+    header {
+        padding: 50px 20px 25px;
+    }
+    
+    .balance-section {
+        margin: -40px 16px 16px;
+        padding: 24px 20px;
     }
     
     .balance-amount {
-        font-size: 2.5rem;
+        font-size: 2rem;
+    }
+    
+    .card {
+        margin: 0 16px 12px;
     }
     
     .summary-section {
-        grid-template-columns: 1fr;
-        gap: 16px;
+        margin: 16px;
+        gap: 8px;
     }
     
     .category-group {
         grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .card {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .balance-amount {
-        font-size: 2rem;
-    }
-    
-    .transaction-item {
-        flex-direction: column;
-        align-items: flex-start;
         gap: 8px;
-    }
-    
-    .transaction-item div:last-child {
-        align-self: flex-end;
     }
 }
 
 /* Loading Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 .card {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeInUp 0.6s ease-out;
 }
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-safe { background: var(--success); }
+.status-warning { background: var(--warning); }
+.status-danger { background: var(--danger); }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -460,7 +576,7 @@ button#removeCategory:hover {
 
 ::-webkit-scrollbar-thumb {
     background: var(--primary);
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
