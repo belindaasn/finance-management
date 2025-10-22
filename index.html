@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajer Keuangan Pribadi</title>
-    <meta name="theme-color" content="#3498db">
+    <meta name="theme-color" content="#6366f1">
     <meta name="description" content="Aplikasi manajemen keuangan pribadi dalam Bahasa Indonesia">
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,13 +21,13 @@
             <h1>💸 Manajer Keuangan Pribadi</h1>
         </header>
 
-        <div class="balance-section">
+        <div class="balance-section card">
             <h2>Saldo Saat Ini</h2>
             <div class="balance-amount" id="balance">Rp 0.00</div>
         </div>
 
-        <div class="budget-section">
-            <h3>📋 Rencana Anggaran</h3>
+        <div class="budget-section card">
+            <h3>📊 Rencana Anggaran</h3>
             
             <div class="budget-setup">
                 <h4>Atur Anggaran Kamu</h4>
@@ -85,8 +91,8 @@
             </div>
         </div>
 
-        <div class="transaction-form">
-            <h3>Tambah Transaksi</h3>
+        <div class="transaction-form card">
+            <h3>💳 Tambah Transaksi</h3>
             <form id="transactionForm">
                 <div class="form-group">
                     <label for="description">Keterangan:</label>
@@ -117,8 +123,8 @@
             </form>
         </div>
 
-        <div class="transaction-list">
-            <h3>Riwayat Transaksi</h3>
+        <div class="transaction-list card">
+            <h3>📝 Riwayat Transaksi</h3>
             <div id="transactionContainer"></div>
         </div>
 
