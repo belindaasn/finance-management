@@ -3,7 +3,6 @@ class FinanceManager {
         this.transactions = JSON.parse(localStorage.getItem('transactions')) || [];
         this.budget = JSON.parse(localStorage.getItem('budget')) || null;
         this.currency = 'Rp';
-        this.lastResetDate = localStorage.getItem('lastResetDate') || new Date().toDateString();
         this.init();
     }
 
@@ -20,46 +19,89 @@ class FinanceManager {
             this.updateResetTimer();
             this.updateCategoryDropdown();
         }
-        
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(registration => console.log('SW registered'))
-                .catch(error => console.log('SW failed:', error));
-        }
     }
 
     checkAutoReset() {
-        const today = new Date().toDateString();
-        if (today !== this.lastResetDate && this.budget) {
-            const lastReset = new Date(this.lastResetDate);
-            const currentDate = new Date();
-            let shouldReset = false;
+        if (!this.budget) return;
 
-            if (this.budget.period === 'daily') {
-                shouldReset = true;
-            } else if (this.budget.period === 'weekly' && currentDate.getDay() < lastReset.getDay()) {
-                shouldReset = true;
-            } else if (this.budget.period === 'monthly' && currentDate.getMonth() !== lastReset.getMonth()) {
-                shouldReset = true;
-            } else if (this.budget.period === 'yearly' && currentDate.getFullYear() !== lastReset.getFullYear()) {
-                shouldReset = true;
-            }
+        const now = new Date();
+        const lastReset = new Date(this.budget.lastReset || this.budget.createdAt);
+        const period = this.budget.period;
+        
+        let shouldReset = false;
 
-            if (shouldReset) {
-                this.resetBudget();
-            }
-            
-            this.lastResetDate = today;
-            localStorage.setItem('lastResetDate', today);
+        switch (period) {
+            case 'daily':
+                shouldReset = now.toDateString() !== lastReset.toDateString();
+                break;
+            case 'weekly':
+                const lastResetWeek = this.getWeekNumber(lastReset);
+                const currentWeek = this.getWeekNumber(now);
+                shouldReset = currentWeek !== lastResetWeek || now.getFullYear() !== lastReset.getFullYear();
+                break;
+            case 'monthly':
+                shouldReset = now.getMonth() !== lastReset.getMonth() || now.getFullYear() !== lastReset.getFullYear();
+                break;
+            case 'yearly':
+                shouldReset = now.getFullYear() !== lastReset.getFullYear();
+                break;
+        }
+
+        if (shouldReset) {
+            this.resetBudget();
+            this.budget.lastReset = now.toISOString();
+            this.saveBudgetToLocalStorage();
         }
     }
 
+    getWeekNumber(date) {
+        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+        const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+    }
+
     resetBudget() {
+        if (!this.budget) return;
+
         Object.keys(this.budget.categories).forEach(category => {
             this.budget.categories[category].spent = 0;
         });
+        
         this.saveBudgetToLocalStorage();
         this.updateBudgetDisplay();
+        this.showResetNotification();
+    }
+
+    showResetNotification() {
+        const periodLabels = {
+            'daily': 'hari',
+            'weekly': 'minggu', 
+            'monthly': 'bulan',
+            'yearly': 'tahun'
+        };
+        
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            font-weight: 600;
+            animation: slideDown 0.5s ease-out;
+        `;
+        
+        notification.textContent = `🔄 Limit ${periodLabels[this.budget.period]}an telah direset!`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
     }
 
     setupEventListeners() {
@@ -108,7 +150,7 @@ class FinanceManager {
             <div class="form-group">
                 <label>Kategori ${categoryCount}:</label>
                 <input type="text" class="category-name" placeholder="Nama kategori" value="Kategori ${categoryCount}">
-                <input type="number" class="category-amount" placeholder="Jumlah" value="0">
+                <input type="number" class="category-amount" placeholder="Limit" value="0">
             </div>
         `;
         
@@ -186,7 +228,7 @@ class FinanceManager {
         });
 
         if (totalAllocated > totalBudget) {
-            alert('Total anggaran kategori melebihi total anggaran keseluruhan!');
+            alert('Total limit kategori melebihi total limit keseluruhan! Sesuaikan lagi limit kamu.');
             return;
         }
 
@@ -205,7 +247,7 @@ class FinanceManager {
         document.getElementById('budgetDisplay').style.display = 'block';
         this.updateResetTimer();
         
-        alert('Rencana anggaran berhasil diset!');
+        alert('Limit pengeluaran berhasil diset! 🎯');
     }
 
     updateResetTimer() {
@@ -221,9 +263,66 @@ class FinanceManager {
         document.getElementById('periodLabel').textContent = periodLabels[this.budget.period];
         
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('resetTimer').textContent = now.toLocaleTimeString('id-ID');
-        }, 1000);
+            this.updateResetCountdown();
+        }, 60000);
+        
+        this.updateResetCountdown();
+    }
+
+    getNextResetDate() {
+        if (!this.budget) return new Date();
+        
+        const now = new Date();
+        const period = this.budget.period;
+        
+        switch (period) {
+            case 'daily':
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                return tomorrow;
+            case 'weekly':
+                const nextMonday = new Date(now);
+                const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
+                nextMonday.setDate(now.getDate() + daysUntilMonday);
+                nextMonday.setHours(0, 0, 0, 0);
+                return nextMonday;
+            case 'monthly':
+                const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                nextMonth.setHours(0, 0, 0, 0);
+                return nextMonth;
+            case 'yearly':
+                const nextYear = new Date(now.getFullYear() + 1, 0, 1);
+                nextYear.setHours(0, 0, 0, 0);
+                return nextYear;
+            default:
+                return new Date();
+        }
+    }
+
+    updateResetCountdown() {
+        const nextReset = this.getNextResetDate();
+        const now = new Date();
+        const timeUntilReset = nextReset - now;
+        
+        if (timeUntilReset > 0) {
+            const days = Math.floor(timeUntilReset / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeUntilReset % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeUntilReset % (1000 * 60 * 60)) / (1000 * 60));
+            
+            let displayText = '';
+            if (days > 0) {
+                displayText = `${days}h ${hours}j ${minutes}m`;
+            } else if (hours > 0) {
+                displayText = `${hours}j ${minutes}m`;
+            } else {
+                displayText = `${minutes}m`;
+            }
+            
+            document.getElementById('resetTimer').textContent = displayText;
+        } else {
+            document.getElementById('resetTimer').textContent = 'Segera reset!';
+        }
     }
 
     updateBudgetDisplay() {
@@ -235,6 +334,13 @@ class FinanceManager {
         document.getElementById('displayTotalBudget').textContent = this.formatCurrency(this.budget.totalBudget);
         document.getElementById('displayTotalUsed').textContent = this.formatCurrency(totalUsed);
         document.getElementById('displayRemaining').textContent = this.formatCurrency(remaining);
+
+        const warningMessage = document.getElementById('warningMessage');
+        if (remaining < 0) {
+            warningMessage.style.display = 'flex';
+        } else {
+            warningMessage.style.display = 'none';
+        }
 
         this.updateCategoriesDisplay();
     }
@@ -312,6 +418,15 @@ class FinanceManager {
         
         if (type === 'expense') {
             this.updateBudgetWithTransaction(transaction);
+            
+            const totalUsed = Object.values(this.budget.categories).reduce((sum, cat) => sum + cat.spent, 0);
+            const remaining = this.budget.totalBudget - totalUsed;
+            
+            if (remaining < 0) {
+                alert(`⚠️ PERINGATAN: Pengeluaran melebihi limit! Sisa: ${this.formatCurrency(remaining)}`);
+            } else if (remaining < (this.budget.totalBudget * 0.2)) {
+                alert(`💡 Hati-hati: Limit hampir habis! Sisa: ${this.formatCurrency(remaining)}`);
+            }
         }
         
         this.clearForm();
@@ -354,7 +469,7 @@ class FinanceManager {
         container.innerHTML = '';
 
         if (this.transactions.length === 0) {
-            container.innerHTML = '<p>Belum ada transaksi. Tambahkan transaksi pertama!</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--text-tertiary); padding: 40px 0;">Belum ada transaksi</p>';
             return;
         }
 
@@ -362,13 +477,12 @@ class FinanceManager {
             const transactionElement = document.createElement('div');
             transactionElement.className = 'transaction-item';
             transactionElement.innerHTML = `
-                <div>
-                    <strong>${transaction.description}</strong>
-                    <br>
-                    <small>${transaction.date} • ${transaction.category}</small>
+                <div class="transaction-info">
+                    <div class="transaction-description">${transaction.description}</div>
+                    <div class="transaction-meta">${transaction.date} • ${transaction.category}</div>
                 </div>
                 <div>
-                    <span class="${transaction.type}">${transaction.type === 'income' ? '+' : '-'}${this.formatCurrency(Math.abs(transaction.amount))}</span>
+                    <span class="${transaction.type} transaction-amount">${transaction.type === 'income' ? '+' : '-'}${this.formatCurrency(Math.abs(transaction.amount))}</span>
                     <button class="delete-btn" onclick="financeManager.deleteTransaction(${transaction.id})">Hapus</button>
                 </div>
             `;
@@ -392,11 +506,11 @@ class FinanceManager {
         document.getElementById('totalExpenses').textContent = this.formatCurrency(totalExpenses);
 
         const balanceElement = document.getElementById('balance');
-        balanceElement.style.color = balance >= 0 ? '#27ae60' : '#e74c3c';
+        balanceElement.style.color = balance >= 0 ? 'white' : '#FF6B6B';
     }
 
     formatCurrency(amount) {
-        return `${this.currency} ${amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+        return `${this.currency} ${amount.toLocaleString('id-ID')}`;
     }
 
     clearForm() {
