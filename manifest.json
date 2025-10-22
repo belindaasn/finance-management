@@ -1,11 +1,11 @@
 {
-    "name": "Manajer Keuangan Pribadi",
+    "name": "FinanceID - Manajer Keuangan",
     "short_name": "FinanceID",
-    "description": "Aplikasi manajemen keuangan pribadi dalam Bahasa Indonesia",
+    "description": "Aplikasi manajemen keuangan modern",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#3498db",
+    "background_color": "#FFFFFF",
+    "theme_color": "#00AA13",
     "icons": [
         {
             "src": "icon-192.png",
