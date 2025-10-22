@@ -1,15 +1,8 @@
-Here's the **complete updated README.md**:
-
-## File: README.md (FINAL)
-
-```markdown
 # 💸 FinanceID - Manajer Keuangan Pribadi
 
 Aplikasi web modern untuk mengatur keuangan pribadi dengan design inspirasi GoPay dan Mandiri Livin'. Dibuat dengan teknologi web modern dan PWA support.
 
-🌐 **Live Demo**: [https://your-username.github.io/finance-manager/](https://your-username.github.io/finance-manager/)
-
-![FinanceID Screenshot](https://imgur.com/9Ww3w3h.png)
+🌐 **Live Demo**: [https://belindaasn.github.io/finance-manager/]
 
 ## ✨ Fitur Utama
 
@@ -41,7 +34,7 @@ Aplikasi web modern untuk mengatur keuangan pribadi dengan design inspirasi GoPa
 ### 1. **Setup Limit Pertama Kali**
 
 **Step 1: Pilih Periode**
-```bash
+```
 Pilih salah satu:
 - Harian   → Cocok untuk daily expense tracking
 - Mingguan → Ideal untuk uang jajan mingguan  
@@ -50,12 +43,12 @@ Pilih salah satu:
 ```
 
 **Step 2: Set Total Limit**
-```bash
+```
 Contoh: Rp 500.000 (maksimal pengeluaran bulanan)
 ```
 
 **Step 3: Tambah Kategori**
-```bash
+```
 Klik "+ Tambah Kategori" untuk membuat kategori:
 - Makan & Minum    : Rp 200.000
 - Transportasi     : Rp 100.000
@@ -240,4 +233,5 @@ python -m http.server 8000
 ---
 
 *"Financial freedom is available to those who learn about it and work for it."* - Robert Kiyosaki
-```
+
+**Note**: Ganti `your-username` pada demo URL dengan username GitHub kamu yang sebenarnya!
