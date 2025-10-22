@@ -5,11 +5,11 @@
 }
 
 :root {
-    --primary: #00AA13;           /* GoPay Green */
+    --primary: #00AA13;
     --primary-dark: #008A0F;
     --primary-light: #E8F5E9;
-    --secondary: #FF6B00;         /* GoPay Orange */
-    --accent: #3366FF;            /* Blue accent */
+    --secondary: #FF6B00;
+    --accent: #3366FF;
     --success: #00C853;
     --warning: #FFAB00;
     --danger: #FF3B30;
@@ -22,8 +22,6 @@
     --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
     --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    --gradient-orange: linear-gradient(135deg, #FF6B00, #FF8F00);
-    --gradient-blue: linear-gradient(135deg, #3366FF, #1A47FF);
 }
 
 body {
@@ -35,7 +33,7 @@ body {
 }
 
 .container {
-    max-width: 428px; /* Mobile-first like banking apps */
+    max-width: 428px;
     margin: 0 auto;
     padding: 0;
     background: var(--surface);
@@ -43,7 +41,6 @@ body {
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
 }
 
-/* Header - GoPay Style */
 header {
     background: var(--gradient-primary);
     color: white;
@@ -54,23 +51,16 @@ header {
 }
 
 header h1 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
-header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
-    background: var(--gradient-primary);
-    z-index: -1;
+header p {
+    opacity: 0.9;
+    font-size: 0.9rem;
 }
 
-/* Balance Section - Like Banking Apps */
 .balance-section {
     background: var(--gradient-primary);
     margin: -50px 20px 20px;
@@ -92,13 +82,11 @@ header::before {
 }
 
 .balance-amount {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 700;
     letter-spacing: -0.5px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Cards - Modern Fintech Style */
 .card {
     background: var(--surface);
     margin: 0 20px 16px;
@@ -107,6 +95,7 @@ header::before {
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
     overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
 }
 
 .card-header {
@@ -128,18 +117,11 @@ header::before {
     padding: 24px;
 }
 
-/* Budget Section */
 .budget-section .card-header {
     background: linear-gradient(135deg, var(--primary-light), #F0F9FF);
     border-bottom: none;
 }
 
-.budget-section .card-header h3::before {
-    content: "📊";
-    font-size: 1.5rem;
-}
-
-/* Forms - Modern Inputs */
 .form-group {
     margin-bottom: 20px;
 }
@@ -150,6 +132,13 @@ label {
     font-weight: 500;
     color: var(--text-primary);
     font-size: 0.9rem;
+}
+
+.input-hint {
+    color: var(--text-tertiary);
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 4px;
 }
 
 input, select {
@@ -167,11 +156,9 @@ input:focus, select:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(0, 170, 19, 0.1);
-    background: var(--surface);
 }
 
-/* Buttons - GoPay Style */
-button {
+.primary-btn {
     background: var(--primary);
     color: white;
     padding: 16px 24px;
@@ -181,36 +168,38 @@ button {
     font-size: 1rem;
     font-weight: 600;
     width: 100%;
-    margin-bottom: 12px;
     transition: all 0.2s ease;
     font-family: inherit;
-    position: relative;
-    overflow: hidden;
 }
 
-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-button:hover::before {
-    left: 100%;
-}
-
-button:hover {
+.primary-btn:hover {
     background: var(--primary-dark);
     transform: translateY(-1px);
     box-shadow: var(--shadow);
 }
 
-button:active {
-    transform: translateY(0);
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
 button#addCategory {
@@ -233,13 +222,11 @@ button#removeCategory:hover {
     background: var(--danger);
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 500;
-    width: auto;
-    margin: 0;
 }
 
 .delete-btn:hover {
@@ -247,7 +234,6 @@ button#removeCategory:hover {
     transform: none;
 }
 
-/* Category Groups */
 .category-group {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -256,7 +242,6 @@ button#removeCategory:hover {
     align-items: end;
 }
 
-/* Budget Display */
 .budget-summary {
     background: linear-gradient(135deg, #F8F9FA, #F1F3F4);
     padding: 20px;
@@ -276,10 +261,47 @@ button#removeCategory:hover {
 
 .budget-item:last-child {
     border-bottom: none;
-    margin-bottom: 0;
 }
 
-/* Progress Bars - Modern */
+.reset-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+}
+
+.reset-label {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+}
+
+.reset-time {
+    font-weight: 600;
+    color: var(--primary);
+    font-family: 'Monaco', 'Menlo', monospace;
+    background: var(--primary-light);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.budget-item.warning {
+    background: #FFF3F3;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--danger);
+    margin-top: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
 .budget-category {
     margin-bottom: 20px;
 }
@@ -290,10 +312,6 @@ button#removeCategory:hover {
     margin-bottom: 8px;
     font-weight: 600;
     font-size: 0.9rem;
-}
-
-.progress-container {
-    position: relative;
 }
 
 .progress-bar {
@@ -329,39 +347,24 @@ button#removeCategory:hover {
 
 .on-track { 
     background: linear-gradient(90deg, var(--success), #00E676);
-    box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3);
 }
 
 .near-limit { 
     background: linear-gradient(90deg, var(--warning), #FFD600);
-    box-shadow: 0 2px 8px rgba(255, 171, 0, 0.3);
 }
 
 .over-budget { 
     background: linear-gradient(90deg, var(--danger), #FF5252);
-    box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
 }
 
-/* Transaction Form */
 .transaction-form .card-header {
     background: linear-gradient(135deg, #FFF3E0, #FFF8E1);
     border-bottom: none;
 }
 
-.transaction-form .card-header h3::before {
-    content: "💳";
-    font-size: 1.5rem;
-}
-
-/* Transaction List */
 .transaction-list .card-header {
     background: linear-gradient(135deg, #E3F2FD, #E1F5FE);
     border-bottom: none;
-}
-
-.transaction-list .card-header h3::before {
-    content: "📝";
-    font-size: 1.5rem;
 }
 
 .transaction-item {
@@ -370,11 +373,6 @@ button#removeCategory:hover {
     align-items: center;
     padding: 16px 0;
     border-bottom: 1px solid var(--border);
-    transition: background-color 0.2s ease;
-}
-
-.transaction-item:hover {
-    background: #FAFAFA;
 }
 
 .transaction-item:last-child {
@@ -398,7 +396,7 @@ button#removeCategory:hover {
 
 .transaction-amount {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .income {
@@ -409,7 +407,6 @@ button#removeCategory:hover {
     color: var(--danger);
 }
 
-/* Summary Section - GoPay Style */
 .summary-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -430,7 +427,6 @@ button#removeCategory:hover {
 
 .summary-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
 }
 
 .summary-card.income-card {
@@ -452,57 +448,38 @@ button#removeCategory:hover {
 
 .income-amount {
     color: var(--success);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
 }
 
 .expense-amount {
     color: var(--danger);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
 }
 
-/* Reset Timer */
-#resetTimer {
-    color: var(--primary);
-    font-weight: 600;
-    font-family: 'Monaco', 'Menlo', monospace;
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
-/* Bottom Navigation (Like Banking Apps) */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-around;
-    padding: 12px 0;
-    backdrop-filter: blur(10px);
+@keyframes slideDown {
+    from {
+        transform: translateX(-50%) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
 }
 
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    color: var(--text-tertiary);
-    font-size: 0.7rem;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.nav-item.active {
-    color: var(--primary);
-}
-
-.nav-icon {
-    font-size: 1.2rem;
-}
-
-/* Responsive */
 @media (max-width: 480px) {
     .container {
         border-radius: 0;
@@ -534,51 +511,4 @@ button#removeCategory:hover {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-}
-
-/* Loading Animation */
-@keyframes fadeInUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-.card {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-/* Status Indicators */
-.status-indicator {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
-.status-safe { background: var(--success); }
-.status-warning { background: var(--warning); }
-.status-danger { background: var(--danger); }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 4px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-dark);
 }
