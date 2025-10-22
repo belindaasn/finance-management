@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajer Keuangan Pribadi</title>
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="Aplikasi manajemen keuangan pribadi dalam Bahasa Indonesia">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💸 Manajer Keuangan Pribadi</h1>
+        </header>
+
+        <div class="balance-section">
+            <h2>Saldo Saat Ini</h2>
+            <div class="balance-amount" id="balance">Rp 0.00</div>
+        </div>
+
+        <div class="budget-section">
+            <h3>📋 Rencana Anggaran</h3>
+            
+            <div class="budget-setup">
+                <h4>Atur Anggaran Kamu</h4>
+                <form id="budgetForm">
+                    <div class="form-group">
+                        <label for="budgetPeriod">Periode Anggaran:</label>
+                        <select id="budgetPeriod" required>
+                            <option value="daily">Harian</option>
+                            <option value="weekly">Mingguan</option>
+                            <option value="monthly" selected>Bulanan</option>
+                            <option value="yearly">Tahunan</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="totalBudget">Total Anggaran:</label>
+                        <input type="number" id="totalBudget" step="10000" required placeholder="contoh: 1000000">
+                    </div>
+                    
+                    <div id="customCategories">
+                        <div class="category-group">
+                            <div class="form-group">
+                                <label>Kategori 1:</label>
+                                <input type="text" class="category-name" placeholder="Nama kategori" value="Tabungan">
+                                <input type="number" class="category-amount" placeholder="Jumlah" value="100000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" id="addCategory">+ Tambah Kategori</button>
+                        <button type="button" id="removeCategory">- Hapus Kategori</button>
+                    </div>
+                    
+                    <button type="submit">Atur Rencana Anggaran</button>
+                </form>
+            </div>
+
+            <div class="budget-display" id="budgetDisplay" style="display: none;">
+                <h4>Progress Anggaran <span id="periodLabel">Bulanan</span></h4>
+                <div class="budget-summary">
+                    <div class="budget-item">
+                        <span>Total Anggaran:</span>
+                        <span id="displayTotalBudget">Rp 0</span>
+                    </div>
+                    <div class="budget-item">
+                        <span>Total Terpakai:</span>
+                        <span id="displayTotalUsed">Rp 0</span>
+                    </div>
+                    <div class="budget-item">
+                        <span>Sisa:</span>
+                        <span id="displayRemaining">Rp 0</span>
+                    </div>
+                    <div class="budget-item">
+                        <span>Reset Otomatis:</span>
+                        <span id="resetTimer">-</span>
+                    </div>
+                </div>
+
+                <div class="budget-categories-display" id="categoriesDisplay"></div>
+            </div>
+        </div>
+
+        <div class="transaction-form">
+            <h3>Tambah Transaksi</h3>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="description">Keterangan:</label>
+                    <input type="text" id="description" required placeholder="contoh: Makan siang, Bensin, Tabungan">
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Jumlah:</label>
+                    <input type="number" id="amount" step="0.01" required placeholder="contoh: 50000">
+                </div>
+
+                <div class="form-group">
+                    <label for="categorySelect">Kategori:</label>
+                    <select id="categorySelect" required>
+                        <option value="">Pilih Kategori</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type">Jenis:</label>
+                    <select id="type" required>
+                        <option value="income">Pemasukan</option>
+                        <option value="expense">Pengeluaran</option>
+                    </select>
+                </div>
+                
+                <button type="submit">Tambah Transaksi</button>
+            </form>
+        </div>
+
+        <div class="transaction-list">
+            <h3>Riwayat Transaksi</h3>
+            <div id="transactionContainer"></div>
+        </div>
+
+        <div class="summary-section">
+            <div class="summary-card">
+                <h4>Total Pemasukan</h4>
+                <div class="income-amount" id="totalIncome">Rp 0.00</div>
+            </div>
+            <div class="summary-card">
+                <h4>Total Pengeluaran</h4>
+                <div class="expense-amount" id="totalExpenses">Rp 0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
