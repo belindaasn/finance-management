@@ -63,8 +63,8 @@ header p {
 
 .balance-section {
     background: var(--gradient-primary);
-    margin: -50px 20px 20px;
-    padding: 30px 24px;
+    margin: -50px 20px 15px;
+    padding: 25px 24px;
     border-radius: 20px;
     color: white;
     text-align: center;
@@ -74,17 +74,67 @@ header p {
 }
 
 .balance-section h2 {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     opacity: 0.9;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: 0.5px;
 }
 
 .balance-amount {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: -0.5px;
+}
+
+/* NEW: Sisa Saldo Section */
+.remaining-balance-section {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    margin: 0 20px 20px;
+    padding: 20px;
+    border-radius: 16px;
+    color: white;
+    box-shadow: var(--shadow-lg);
+}
+
+.balance-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 16px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.balance-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.balance-item:last-child {
+    margin-bottom: 0;
+}
+
+.balance-item.highlight {
+    font-weight: 700;
+    font-size: 1rem;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin-top: 8px;
+}
+
+#remainingBalance {
+    color: #FFD700;
+    font-weight: 800;
+}
+
+.balance-negative {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+}
+
+.balance-warning {
+    animation: pulse 2s infinite;
+    color: #FFD700 !important;
 }
 
 .card {
@@ -518,12 +568,17 @@ button#removeCategory:hover {
     }
     
     .balance-section {
-        margin: -40px 16px 16px;
-        padding: 24px 20px;
+        margin: -40px 16px 12px;
+        padding: 20px;
     }
     
     .balance-amount {
-        font-size: 2rem;
+        font-size: 1.6rem;
+    }
+    
+    .remaining-balance-section {
+        margin: 0 16px 16px;
+        padding: 16px;
     }
     
     .card {
