@@ -480,6 +480,34 @@ button#removeCategory:hover {
     }
 }
 
+/* Smooth category transitions */
+#categoryGroup {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Better type selector */
+#type {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+#type option {
+    padding: 12px;
+    font-weight: 500;
+}
+
+#type option[value="income"] {
+    color: var(--success);
+}
+
+#type option[value="expense"] {
+    color: var(--danger);
+}
+
 @media (max-width: 480px) {
     .container {
         border-radius: 0;
