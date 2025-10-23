@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceID - Manajer Keuangan</title>
     <meta name="theme-color" content="#00AA13">
-    <meta name="description" content="Aplikasi manajemen keuangan modern seperti GoPay dan Livin'">
+    <meta name="description" content="Kelola keuangan dengan mudah">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FinanceID">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -99,7 +105,7 @@
             <form id="transactionForm">
                 <div class="form-group">
                     <label for="description">Keterangan:</label>
-                    <input type="text" id="description" required placeholder="contoh: Makan siang, Bensin, Tabungan">
+                    <input type="text" id="description" required placeholder="contoh: Gaji bulanan, Makan siang, Bensin">
                 </div>
                 
                 <div class="form-group">
@@ -108,17 +114,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="categorySelect">Kategori:</label>
-                    <select id="categorySelect" required>
-                        <option value="">Pilih Kategori</option>
+                    <label for="type">Jenis Transaksi:</label>
+                    <select id="type" required>
+                        <option value="income">💰 Pemasukan</option>
+                        <option value="expense">💸 Pengeluaran</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label for="type">Jenis:</label>
-                    <select id="type" required>
-                        <option value="income">Pemasukan</option>
-                        <option value="expense">Pengeluaran</option>
+
+                <div class="form-group" id="categoryGroup" style="display: none;">
+                    <label for="categorySelect">Kategori Pengeluaran:</label>
+                    <select id="categorySelect">
+                        <option value="">Pilih Kategori</option>
                     </select>
                 </div>
                 
