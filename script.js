@@ -19,6 +19,27 @@ class FinanceManager {
             this.updateResetTimer();
             this.updateCategoryDropdown();
         }
+        
+        // PWA Registration
+        this.registerServiceWorker();
+    }
+
+    registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(registration => {
+                    console.log('SW registered: ', registration);
+                    
+                    // Listen for install prompt
+                    window.addEventListener('beforeinstallprompt', (e) => {
+                        console.log('App is installable!');
+                        // You can show install button here
+                    });
+                })
+                .catch(error => {
+                    console.log('SW registration failed: ', error);
+                });
+        }
     }
 
     checkAutoReset() {
@@ -131,6 +152,26 @@ class FinanceManager {
                 this.saveFormState();
             }
         });
+
+        // SMART: Show/hide category based on transaction type
+        document.getElementById('type').addEventListener('change', (e) => {
+            this.toggleCategoryField(e.target.value);
+        });
+    }
+
+    // SMART: Toggle category field
+    toggleCategoryField(transactionType) {
+        const categoryGroup = document.getElementById('categoryGroup');
+        const categorySelect = document.getElementById('categorySelect');
+        
+        if (transactionType === 'expense') {
+            categoryGroup.style.display = 'block';
+            categorySelect.required = true;
+        } else {
+            categoryGroup.style.display = 'none';
+            categorySelect.required = false;
+            categorySelect.value = ''; // Clear selection
+        }
     }
 
     setupBudget() {
@@ -395,9 +436,18 @@ class FinanceManager {
         const description = document.getElementById('description').value;
         const amount = parseFloat(document.getElementById('amount').value);
         const type = document.getElementById('type').value;
-        const category = document.getElementById('categorySelect').value;
+        
+        // SMART: Only require category for expenses
+        let category = '';
+        if (type === 'expense') {
+            category = document.getElementById('categorySelect').value;
+            if (!category) {
+                alert('Harap pilih kategori untuk pengeluaran!');
+                return;
+            }
+        }
 
-        if (!description || isNaN(amount) || !category) {
+        if (!description || isNaN(amount)) {
             alert('Harap isi semua field dengan benar!');
             return;
         }
@@ -407,7 +457,7 @@ class FinanceManager {
             description,
             amount,
             type,
-            category,
+            category: type === 'income' ? 'Pemasukan' : category,
             date: new Date().toLocaleDateString('id-ID')
         };
 
@@ -476,10 +526,14 @@ class FinanceManager {
         this.transactions.reverse().forEach(transaction => {
             const transactionElement = document.createElement('div');
             transactionElement.className = 'transaction-item';
+            
+            // SMART: Different display for income vs expense
+            const categoryDisplay = transaction.type === 'income' ? 'Pemasukan' : transaction.category;
+            
             transactionElement.innerHTML = `
                 <div class="transaction-info">
                     <div class="transaction-description">${transaction.description}</div>
-                    <div class="transaction-meta">${transaction.date} • ${transaction.category}</div>
+                    <div class="transaction-meta">${transaction.date} • ${categoryDisplay}</div>
                 </div>
                 <div>
                     <span class="${transaction.type} transaction-amount">${transaction.type === 'income' ? '+' : '-'}${this.formatCurrency(Math.abs(transaction.amount))}</span>
@@ -515,6 +569,9 @@ class FinanceManager {
 
     clearForm() {
         document.getElementById('transactionForm').reset();
+        // SMART: Reset category field to hidden
+        document.getElementById('categoryGroup').style.display = 'none';
+        document.getElementById('categorySelect').required = false;
     }
 
     saveToLocalStorage() {
