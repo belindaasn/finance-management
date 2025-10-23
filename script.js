@@ -18,6 +18,9 @@ class FinanceManager {
             this.updateBudgetDisplay();
             this.updateResetTimer();
             this.updateCategoryDropdown();
+            
+            // Temporary debug - bisa dihapus nanti
+            this.debugResetInfo();
         }
         
         // PWA Registration
@@ -69,6 +72,7 @@ class FinanceManager {
         }
 
         if (shouldReset) {
+            console.log(`Auto-reset triggered for ${period} period`);
             this.resetBudget();
             this.budget.lastReset = now.toISOString();
             this.saveBudgetToLocalStorage();
@@ -318,24 +322,32 @@ class FinanceManager {
         
         switch (period) {
             case 'daily':
+                // Reset besok jam 00:00
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 tomorrow.setHours(0, 0, 0, 0);
                 return tomorrow;
+                
             case 'weekly':
+                // Reset hari Senin depan jam 00:00
                 const nextMonday = new Date(now);
-                const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
+                const daysUntilMonday = (1 + 7 - now.getDay()) % 7 || 7;
                 nextMonday.setDate(now.getDate() + daysUntilMonday);
                 nextMonday.setHours(0, 0, 0, 0);
                 return nextMonday;
+                
             case 'monthly':
+                // Reset tanggal 1 bulan depan jam 00:00
                 const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
                 nextMonth.setHours(0, 0, 0, 0);
                 return nextMonth;
+                
             case 'yearly':
+                // Reset 1 Januari tahun depan jam 00:00
                 const nextYear = new Date(now.getFullYear() + 1, 0, 1);
                 nextYear.setHours(0, 0, 0, 0);
                 return nextYear;
+                
             default:
                 return new Date();
         }
@@ -364,6 +376,23 @@ class FinanceManager {
         } else {
             document.getElementById('resetTimer').textContent = 'Segera reset!';
         }
+    }
+
+    // Debug method untuk lihat info reset
+    debugResetInfo() {
+        if (!this.budget) return;
+        
+        const now = new Date();
+        const nextReset = this.getNextResetDate();
+        const lastReset = new Date(this.budget.lastReset || this.budget.createdAt);
+        
+        console.log('=== RESET DEBUG INFO ===');
+        console.log('Period:', this.budget.period);
+        console.log('Now:', now.toLocaleString('id-ID'));
+        console.log('Last reset:', lastReset.toLocaleString('id-ID'));
+        console.log('Next reset:', nextReset.toLocaleString('id-ID'));
+        console.log('Time until reset:', Math.floor((nextReset - now) / (1000 * 60 * 60)), 'hours');
+        console.log('=====================');
     }
 
     updateBudgetDisplay() {
