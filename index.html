@@ -4,29 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceID - Manajer Keuangan</title>
-    
-    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#00AA13">
     <meta name="description" content="Kelola keuangan dengan mudah">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="FinanceID">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="msapplication-TileColor" content="#00AA13">
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <!-- Manifest -->
-    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
-    
-    <!-- Styles -->
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -36,9 +25,28 @@
             <p>Kelola keuangan dengan mudah</p>
         </header>
 
+        <!-- Balance Section -->
         <div class="balance-section card">
             <h2>Saldo Saat Ini</h2>
             <div class="balance-amount" id="balance">Rp 0</div>
+        </div>
+
+        <!-- NEW: Sisa Saldo Section -->
+        <div class="remaining-balance-section card">
+            <div class="balance-info">
+                <div class="balance-item">
+                    <span>Total Pemasukan:</span>
+                    <span id="totalIncomeDisplay">Rp 0</span>
+                </div>
+                <div class="balance-item">
+                    <span>Total Pengeluaran:</span>
+                    <span id="totalExpensesDisplay">Rp 0</span>
+                </div>
+                <div class="balance-item highlight">
+                    <span>💎 Sisa Saldo:</span>
+                    <span id="remainingBalance">Rp 0</span>
+                </div>
+            </div>
         </div>
 
         <div class="budget-section card">
@@ -163,4 +171,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
