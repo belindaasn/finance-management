@@ -87,7 +87,6 @@ header p {
     letter-spacing: -0.5px;
 }
 
-/* NEW: Sisa Saldo Section */
 .remaining-balance-section {
     background: linear-gradient(135deg, #667eea, #764ba2);
     margin: 0 20px 20px;
@@ -129,12 +128,12 @@ header p {
 }
 
 .balance-negative {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a52) !important;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
 }
 
 .balance-warning {
     animation: pulse 2s infinite;
-    color: #FFD700 !important;
+    color: #FFD700;
 }
 
 .card {
@@ -530,12 +529,10 @@ button#removeCategory:hover {
     }
 }
 
-/* Smooth category transitions */
 #categoryGroup {
     transition: all 0.3s ease-in-out;
 }
 
-/* Better type selector */
 #type {
     background: var(--surface);
     border: 2px solid var(--border);
