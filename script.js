@@ -20,20 +20,46 @@ class FinanceManager {
             this.updateCategoryDropdown();
         }
         
-        // PWA Registration
         this.registerServiceWorker();
+        this.addManualResetButton();
     }
 
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
                 .then(registration => {
-                    console.log('SW registered: ', registration);
+                    console.log('SW registered');
                 })
                 .catch(error => {
                     console.log('SW registration failed: ', error);
                 });
         }
+    }
+
+    addManualResetButton() {
+        const existingBtn = document.getElementById('manualResetBtn');
+        if (existingBtn) existingBtn.remove();
+
+        const manualResetBtn = document.createElement('button');
+        manualResetBtn.id = 'manualResetBtn';
+        manualResetBtn.textContent = '🔄 Reset Manual';
+        manualResetBtn.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--warning);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        `;
+        manualResetBtn.onclick = () => this.manualReset();
+        document.body.appendChild(manualResetBtn);
     }
 
     checkAutoReset() {
@@ -43,7 +69,7 @@ class FinanceManager {
         const lastReset = new Date(this.budget.lastReset || this.budget.createdAt);
         const period = this.budget.period;
         
-        console.log('🔍 Checking auto-reset...');
+        console.log('=== AUTO-RESET CHECK ===');
         console.log('Period:', period);
         console.log('Last reset:', lastReset.toLocaleDateString('id-ID'));
         console.log('Now:', now.toLocaleDateString('id-ID'));
@@ -52,29 +78,25 @@ class FinanceManager {
 
         switch (period) {
             case 'daily':
-                // Reset setiap hari - cek jika beda tanggal
                 shouldReset = now.toDateString() !== lastReset.toDateString();
-                console.log('Daily check:', now.toDateString(), 'vs', lastReset.toDateString(), '->', shouldReset);
+                console.log('Daily check - different day?', shouldReset);
                 break;
                 
             case 'weekly':
-                // Reset setiap minggu - cek jika beda minggu
                 const lastResetWeek = this.getWeekNumber(lastReset);
                 const currentWeek = this.getWeekNumber(now);
                 shouldReset = currentWeek !== lastResetWeek || now.getFullYear() !== lastReset.getFullYear();
-                console.log('Weekly check:', currentWeek, 'vs', lastResetWeek, '->', shouldReset);
+                console.log('Weekly check - different week?', shouldReset);
                 break;
                 
             case 'monthly':
-                // Reset setiap bulan - cek jika beda bulan
                 shouldReset = now.getMonth() !== lastReset.getMonth() || now.getFullYear() !== lastReset.getFullYear();
-                console.log('Monthly check:', now.getMonth(), 'vs', lastReset.getMonth(), '->', shouldReset);
+                console.log('Monthly check - different month?', shouldReset);
                 break;
                 
             case 'yearly':
-                // Reset setiap tahun - cek jika beda tahun
                 shouldReset = now.getFullYear() !== lastReset.getFullYear();
-                console.log('Yearly check:', now.getFullYear(), 'vs', lastReset.getFullYear(), '->', shouldReset);
+                console.log('Yearly check - different year?', shouldReset);
                 break;
         }
 
@@ -86,6 +108,7 @@ class FinanceManager {
         } else {
             console.log('✅ No reset needed');
         }
+        console.log('=======================');
     }
 
     getWeekNumber(date) {
@@ -97,9 +120,8 @@ class FinanceManager {
     resetBudget() {
         if (!this.budget) return;
 
-        console.log('🔄 Resetting budget categories...');
+        console.log('Resetting all categories to 0...');
         
-        // Reset semua pengeluaran ke 0
         Object.keys(this.budget.categories).forEach(category => {
             this.budget.categories[category].spent = 0;
         });
@@ -171,13 +193,11 @@ class FinanceManager {
             }
         });
 
-        // SMART: Show/hide category based on transaction type
         document.getElementById('type').addEventListener('change', (e) => {
             this.toggleCategoryField(e.target.value);
         });
     }
 
-    // SMART: Toggle category field
     toggleCategoryField(transactionType) {
         const categoryGroup = document.getElementById('categoryGroup');
         const categorySelect = document.getElementById('categorySelect');
@@ -188,7 +208,7 @@ class FinanceManager {
         } else {
             categoryGroup.style.display = 'none';
             categorySelect.required = false;
-            categorySelect.value = ''; // Clear selection
+            categorySelect.value = '';
         }
     }
 
@@ -297,7 +317,7 @@ class FinanceManager {
             categories: categories,
             totalAllocated: totalAllocated,
             createdAt: new Date().toISOString(),
-            lastReset: new Date().toISOString() // Set lastReset saat pertama kali bikin budget
+            lastReset: new Date().toISOString()
         };
 
         this.saveBudgetToLocalStorage();
@@ -306,6 +326,7 @@ class FinanceManager {
         this.updateCategoryDropdown();
         document.getElementById('budgetDisplay').style.display = 'block';
         this.updateResetTimer();
+        this.addManualResetButton();
         
         alert('Limit pengeluaran berhasil diset! 🎯');
     }
@@ -322,13 +343,10 @@ class FinanceManager {
 
         document.getElementById('periodLabel').textContent = periodLabels[this.budget.period];
         
-        // Update countdown every minute
+        this.updateResetCountdown();
         setInterval(() => {
             this.updateResetCountdown();
         }, 60000);
-        
-        // Initial update
-        this.updateResetCountdown();
     }
 
     getNextResetDate() {
@@ -339,14 +357,12 @@ class FinanceManager {
         
         switch (period) {
             case 'daily':
-                // Reset besok jam 00:00
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 tomorrow.setHours(0, 0, 0, 0);
                 return tomorrow;
                 
             case 'weekly':
-                // Reset hari Senin depan jam 00:00
                 const nextMonday = new Date(now);
                 const daysUntilMonday = (1 + 7 - now.getDay()) % 7 || 7;
                 nextMonday.setDate(now.getDate() + daysUntilMonday);
@@ -354,13 +370,11 @@ class FinanceManager {
                 return nextMonday;
                 
             case 'monthly':
-                // Reset tanggal 1 bulan depan jam 00:00
                 const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
                 nextMonth.setHours(0, 0, 0, 0);
                 return nextMonth;
                 
             case 'yearly':
-                // Reset 1 Januari tahun depan jam 00:00
                 const nextYear = new Date(now.getFullYear() + 1, 0, 1);
                 nextYear.setHours(0, 0, 0, 0);
                 return nextYear;
@@ -371,10 +385,18 @@ class FinanceManager {
     }
 
     updateResetCountdown() {
+        if (!this.budget) return;
+
         const nextReset = this.getNextResetDate();
         const now = new Date();
         const timeUntilReset = nextReset - now;
         
+        console.log('🕐 Reset countdown:', {
+            nextReset: nextReset.toLocaleString('id-ID'),
+            now: now.toLocaleString('id-ID'),
+            timeUntilReset: Math.floor(timeUntilReset / (1000 * 60 * 60)) + ' hours'
+        });
+
         if (timeUntilReset > 0) {
             const days = Math.floor(timeUntilReset / (1000 * 60 * 60 * 24));
             const hours = Math.floor((timeUntilReset % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -382,11 +404,11 @@ class FinanceManager {
             
             let displayText = '';
             if (days > 0) {
-                displayText = `${days} hari ${hours} jam`;
+                displayText = `${days}h ${hours}j ${minutes}m`;
             } else if (hours > 0) {
-                displayText = `${hours} jam ${minutes} menit`;
+                displayText = `${hours}j ${minutes}m`;
             } else {
-                displayText = `${minutes} menit`;
+                displayText = `${minutes}m`;
             }
             
             document.getElementById('resetTimer').textContent = displayText;
@@ -466,7 +488,6 @@ class FinanceManager {
         const amount = parseFloat(document.getElementById('amount').value);
         const type = document.getElementById('type').value;
         
-        // SMART: Only require category for expenses
         let category = '';
         if (type === 'expense') {
             category = document.getElementById('categorySelect').value;
@@ -556,7 +577,6 @@ class FinanceManager {
             const transactionElement = document.createElement('div');
             transactionElement.className = 'transaction-item';
             
-            // SMART: Different display for income vs expense
             const categoryDisplay = transaction.type === 'income' ? 'Pemasukan' : transaction.category;
             
             transactionElement.innerHTML = `
@@ -598,7 +618,6 @@ class FinanceManager {
 
     clearForm() {
         document.getElementById('transactionForm').reset();
-        // SMART: Reset category field to hidden
         document.getElementById('categoryGroup').style.display = 'none';
         document.getElementById('categorySelect').required = false;
     }
@@ -611,39 +630,19 @@ class FinanceManager {
         localStorage.setItem('budget', JSON.stringify(this.budget));
     }
 
-    // Manual reset function for testing
     manualReset() {
         if (!this.budget) {
             alert('Tidak ada budget plan yang aktif!');
             return;
         }
         
-        if (confirm('Yakin ingin reset budget sekarang?')) {
+        if (confirm('Yakin ingin reset budget sekarang? Semua pengeluaran akan dikembalikan ke 0.')) {
             this.resetBudget();
             this.budget.lastReset = new Date().toISOString();
             this.saveBudgetToLocalStorage();
-            alert('Budget berhasil direset manual!');
+            alert('Budget berhasil direset manual! 🎯');
         }
     }
 }
 
 const financeManager = new FinanceManager();
-
-// Add manual reset button for testing (bisa dihapus nanti)
-const manualResetBtn = document.createElement('button');
-manualResetBtn.textContent = '🔄 Reset Manual';
-manualResetBtn.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: var(--warning);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 1000;
-`;
-manualResetBtn.onclick = () => financeManager.manualReset();
-document.body.appendChild(manualResetBtn);
