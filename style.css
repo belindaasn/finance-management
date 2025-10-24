@@ -451,10 +451,12 @@ input:focus, select:focus {
 
 .summary-card.income-card {
     background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+    border-left: 4px solid var(--success);
 }
 
 .summary-card.expense-card {
     background: linear-gradient(135deg, #FFEBEE, #FCE4EC);
+    border-left: 4px solid var(--danger);
 }
 
 .summary-card h4 {
@@ -466,16 +468,22 @@ input:focus, select:focus {
     letter-spacing: 0.5px;
 }
 
+/* PERBAIKAN: Pastikan warna teks terlihat */
 .income-amount {
-    color: var(--success);
+    color: var(--success) !important; /* Force warna hijau */
     font-size: 1.3rem;
     font-weight: 700;
 }
 
 .expense-amount {
-    color: var(--danger);
+    color: var(--danger) !important; /* Force warna merah */
     font-size: 1.3rem;
     font-weight: 700;
+}
+
+/* Tambahan untuk memastikan visibility */
+#totalIncome, #totalExpenses {
+    color: inherit !important;
 }
 
 @keyframes fadeInUp {
@@ -558,3 +566,4 @@ input:focus, select:focus {
         padding: 12px 16px;
     }
 }
+
