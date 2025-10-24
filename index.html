@@ -17,6 +17,8 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+    <!-- TAMBAH INI -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -154,6 +156,32 @@
         <div class="transaction-list card">
             <h3>📝 Riwayat Transaksi</h3>
             <div id="transactionContainer"></div>
+        </div>
+
+        <!-- TAMBAH INI - SECTION GRAFIK BARU -->
+        <div class="charts-section card">
+            <h3>📈 Grafik Keuangan</h3>
+            
+            <div class="chart-controls">
+                <select id="chartType">
+                    <option value="daily">Harian</option>
+                    <option value="weekly">Mingguan</option>
+                    <option value="monthly" selected>Bulanan</option>
+                    <option value="yearly">Tahunan</option>
+                </select>
+                
+                <select id="chartView">
+                    <option value="income">Pemasukan</option>
+                    <option value="expense">Pengeluaran</option>
+                    <option value="both" selected>Keduanya</option>
+                </select>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="financeChart"></canvas>
+            </div>
+            
+            <div class="chart-summary" id="chartSummary"></div>
         </div>
 
         <div class="summary-section">
