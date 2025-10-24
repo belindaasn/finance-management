@@ -17,7 +17,6 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <!-- TAMBAH INI -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -33,7 +32,7 @@
             <div class="balance-amount" id="balance">Rp 0</div>
         </div>
 
-        <!-- NEW: Sisa Saldo Section -->
+        <!-- Sisa Saldo Section -->
         <div class="remaining-balance-section card">
             <div class="balance-info">
                 <div class="balance-item">
@@ -73,20 +72,7 @@
                         <small class="input-hint">Maksimal yang boleh dikeluarkan dalam periode ini</small>
                     </div>
                     
-                    <div id="customCategories">
-                        <div class="category-group">
-                            <div class="form-group">
-                                <label>Kategori Pengeluaran:</label>
-                                <input type="text" class="category-name" placeholder="Nama kategori" value="Makan & Minum">
-                                <input type="number" class="category-amount" placeholder="Limit" value="200000">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group button-group">
-                        <button type="button" id="addCategory">+ Tambah Kategori</button>
-                        <button type="button" id="removeCategory">- Hapus Kategori</button>
-                    </div>
+                    <!-- HAPUS SELURUH BAGIAN KATEGORI -->
                     
                     <button type="submit" class="primary-btn">Atur Limit Pengeluaran</button>
                 </form>
@@ -117,7 +103,13 @@
                     </div>
                 </div>
 
-                <div class="budget-categories-display" id="categoriesDisplay"></div>
+                <!-- HAPUS BAGIAN DISPLAY KATEGORI -->
+                <div class="budget-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="overallProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0% digunakan</div>
+                </div>
             </div>
         </div>
 
@@ -141,13 +133,8 @@
                         <option value="expense">💸 Pengeluaran</option>
                     </select>
                 </div>
-
-                <div class="form-group" id="categoryGroup" style="display: none;">
-                    <label for="categorySelect">Kategori Pengeluaran:</label>
-                    <select id="categorySelect">
-                        <option value="">Pilih Kategori</option>
-                    </select>
-                </div>
+                
+                <!-- HAPUS BAGIAN KATEGORI SELECT -->
                 
                 <button type="submit" class="primary-btn">Tambah Transaksi</button>
             </form>
@@ -158,7 +145,6 @@
             <div id="transactionContainer"></div>
         </div>
 
-        <!-- TAMBAH INI - SECTION GRAFIK BARU -->
         <div class="charts-section card">
             <h3>📈 Grafik Keuangan</h3>
             
