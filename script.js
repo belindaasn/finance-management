@@ -3,6 +3,7 @@ class FinanceManager {
         this.transactions = JSON.parse(localStorage.getItem('transactions')) || [];
         this.budget = JSON.parse(localStorage.getItem('budget')) || null;
         this.currency = 'Rp';
+        this.chart = null; // TAMBAH INI
         this.init();
     }
 
@@ -13,6 +14,7 @@ class FinanceManager {
         this.setupEventListeners();
         this.setupBudget();
         this.loadFormState();
+        this.setupCharts(); // TAMBAH INI
         if (this.budget) {
             document.getElementById('budgetDisplay').style.display = 'block';
             this.updateBudgetDisplay();
@@ -22,6 +24,236 @@ class FinanceManager {
         
         this.registerServiceWorker();
         this.addManualResetButton();
+    }
+
+    // TAMBAH METHOD SETUP CHARTS
+    setupCharts() {
+        document.getElementById('chartType').addEventListener('change', () => this.updateChart());
+        document.getElementById('chartView').addEventListener('change', () => this.updateChart());
+        this.updateChart();
+    }
+
+    updateChart() {
+        const chartType = document.getElementById('chartType').value;
+        const chartView = document.getElementById('chartView').value;
+        
+        const { labels, incomeData, expenseData } = this.getChartData(chartType);
+        
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        
+        // Destroy existing chart
+        if (this.chart) {
+            this.chart.destroy();
+        }
+        
+        const datasets = [];
+        
+        if (chartView === 'income' || chartView === 'both') {
+            datasets.push({
+                label: 'Pemasukan',
+                data: incomeData,
+                borderColor: '#00C853',
+                backgroundColor: 'rgba(0, 200, 83, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            });
+        }
+        
+        if (chartView === 'expense' || chartView === 'both') {
+            datasets.push({
+                label: 'Pengeluaran',
+                data: expenseData,
+                borderColor: '#FF3B30',
+                backgroundColor: 'rgba(255, 59, 48, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            });
+        }
+        
+        this.chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                return `${context.dataset.label}: ${this.formatCurrency(context.raw)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => {
+                                if (value >= 1000000) {
+                                    return `Rp ${(value / 1000000).toFixed(1)}Jt`;
+                                } else if (value >= 1000) {
+                                    return `Rp ${(value / 1000).toFixed(0)}Rb`;
+                                }
+                                return `Rp ${value}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        this.updateChartSummary(chartType, incomeData, expenseData);
+    }
+
+    getChartData(period) {
+        const now = new Date();
+        let labels = [];
+        let incomeData = [];
+        let expenseData = [];
+        
+        switch (period) {
+            case 'daily':
+                // 7 hari terakhir
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(now.getDate() - i);
+                    const dateStr = date.toLocaleDateString('id-ID', { 
+                        weekday: 'short', 
+                        day: 'numeric' 
+                    });
+                    
+                    labels.push(dateStr);
+                    incomeData.push(this.getDailyTotal(date, 'income'));
+                    expenseData.push(this.getDailyTotal(date, 'expense'));
+                }
+                break;
+                
+            case 'weekly':
+                // 8 minggu terakhir
+                for (let i = 7; i >= 0; i--) {
+                    const weekStart = new Date();
+                    weekStart.setDate(now.getDate() - (i * 7));
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekStart.getDate() + 6);
+                    
+                    const label = `Minggu ${8-i}`;
+                    labels.push(label);
+                    incomeData.push(this.getWeeklyTotal(weekStart, 'income'));
+                    expenseData.push(this.getWeeklyTotal(weekStart, 'expense'));
+                }
+                break;
+                
+            case 'monthly':
+                // 12 bulan terakhir
+                for (let i = 11; i >= 0; i--) {
+                    const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const label = month.toLocaleDateString('id-ID', { 
+                        month: 'short', 
+                        year: 'numeric' 
+                    });
+                    
+                    labels.push(label);
+                    incomeData.push(this.getMonthlyTotal(month, 'income'));
+                    expenseData.push(this.getMonthlyTotal(month, 'expense'));
+                }
+                break;
+                
+            case 'yearly':
+                // 5 tahun terakhir
+                for (let i = 4; i >= 0; i--) {
+                    const year = now.getFullYear() - i;
+                    labels.push(year.toString());
+                    incomeData.push(this.getYearlyTotal(year, 'income'));
+                    expenseData.push(this.getYearlyTotal(year, 'expense'));
+                }
+                break;
+        }
+        
+        return { labels, incomeData, expenseData };
+    }
+
+    getDailyTotal(date, type) {
+        const dateStr = date.toLocaleDateString('id-ID');
+        return this.transactions
+            .filter(t => t.type === type && t.date === dateStr)
+            .reduce((sum, t) => sum + t.amount, 0);
+    }
+
+    getWeeklyTotal(startDate, type) {
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        
+        return this.transactions
+            .filter(t => {
+                if (t.type !== type) return false;
+                const transDate = new Date(t.date.split('/').reverse().join('-'));
+                return transDate >= startDate && transDate <= endDate;
+            })
+            .reduce((sum, t) => sum + t.amount, 0);
+    }
+
+    getMonthlyTotal(monthDate, type) {
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+        
+        return this.transactions
+            .filter(t => {
+                if (t.type !== type) return false;
+                const transDate = new Date(t.date.split('/').reverse().join('-'));
+                return transDate.getFullYear() === year && transDate.getMonth() === month;
+            })
+            .reduce((sum, t) => sum + t.amount, 0);
+    }
+
+    getYearlyTotal(year, type) {
+        return this.transactions
+            .filter(t => {
+                if (t.type !== type) return false;
+                const transDate = new Date(t.date.split('/').reverse().join('-'));
+                return transDate.getFullYear() === year;
+            })
+            .reduce((sum, t) => sum + t.amount, 0);
+    }
+
+    updateChartSummary(period, incomeData, expenseData) {
+        const totalIncome = incomeData.reduce((sum, val) => sum + val, 0);
+        const totalExpense = expenseData.reduce((sum, val) => sum + val, 0);
+        const net = totalIncome - totalExpense;
+        
+        const summaryElement = document.getElementById('chartSummary');
+        summaryElement.innerHTML = `
+            <div class="chart-summary-item">
+                <span>Total Pemasukan:</span>
+                <span style="color: var(--success);">${this.formatCurrency(totalIncome)}</span>
+            </div>
+            <div class="chart-summary-item">
+                <span>Total Pengeluaran:</span>
+                <span style="color: var(--danger);">${this.formatCurrency(totalExpense)}</span>
+            </div>
+            <div class="chart-summary-item">
+                <span>Saldo ${this.getPeriodLabel(period)}:</span>
+                <span style="color: ${net >= 0 ? 'var(--success)' : 'var(--danger)'};">${this.formatCurrency(net)}</span>
+            </div>
+        `;
+    }
+
+    getPeriodLabel(period) {
+        const labels = {
+            'daily': 'Harian',
+            'weekly': 'Mingguan',
+            'monthly': 'Bulanan', 
+            'yearly': 'Tahunan'
+        };
+        return labels[period];
     }
 
     registerServiceWorker() {
@@ -530,6 +762,7 @@ class FinanceManager {
         }
         
         this.clearForm();
+        this.updateChart(); // TAMBAH INI - Update grafik setiap ada transaksi baru
     }
 
     updateBudgetWithTransaction(transaction) {
@@ -552,6 +785,7 @@ class FinanceManager {
         if (transaction && transaction.type === 'expense') {
             this.updateBudgetAfterDelete(transaction);
         }
+        this.updateChart(); // TAMBAH INI - Update grafik setiap hapus transaksi
     }
 
     updateBudgetAfterDelete(transaction) {
